@@ -2,11 +2,9 @@
 <html lang="ja">
   <head>
     <meta name="google-site-verification" content="rbE24ggJuK5zJPtkz3P4s1PXf6p-tkJYoIsPAac0JZk" />
-    <link rel="icon" type="image/png" sizes="192x192" href="./favicon.png">
-<link rel="apple-touch-icon" href="./favicon.png">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>READ ｰ 心理戦カードバトル ｰ </title>
+    <title>READ - 心理戦カードバトル</title>
     <meta name="description" content="相手の一手を読め。READは無料で遊べる1対1の心理戦カードゲーム。8段階のCPU対戦・フレンド対戦に対応。">
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="READ - 心理戦カードバトル">
@@ -1289,7 +1287,7 @@ main,#lieOverlay,#battleSettings,#endOverlay {
         <dd>① 相手と自分のHP・チャージを確認し、手札から1枚を確定する。<br>② LIEの宣言・判定、DELAYの今回の行動など、必要な追加選択を行う。確定したカードは変更できない。<br>③ 両者の行動を処理し、戦闘結果を表示する。<br>④ 次のターンへ進む。選択時間は60秒。時間切れの選択はランダム。</dd>
         <dt>・⚔︎ 攻撃</dt>
         <dd>攻撃力は1＋蓄積チャージ。攻撃するとチャージをすべて消費する。例：チャージ5なら攻撃力6。相手が通常防御すると3ダメージになる。</dd>
-        <dt>・🛡︎ 防御</dt>
+        <dt>・⛨ 防御</dt>
         <dd>受ける攻撃ダメージを3軽減する。攻撃力2ならダメージ0、攻撃力5ならダメージ2。</dd>
         <dt>・⚡︎ チャージ</dt>
         <dd>チャージを1増やす。上限はなく、攻撃するまで持ち越す。</dd>
@@ -1388,7 +1386,7 @@ main,#lieOverlay,#battleSettings,#endOverlay {
   </div>
 <script>
 const AI = { SWAP: '⇄', LIE: '◉', DELAY: '⌛︎', ZERO: '↻', HEAL: '♥︎' }, AJ = { SWAP: '手札交換', LIE: '虚偽宣言', DELAY: '遅延発動', ZERO: '双方手札リセット', HEAL: 'HP回復' };
-const M = ['攻撃', '防御', 'チャージ'], A = ['SWAP', 'LIE', 'DELAY', 'ZERO', 'HEAL'], C = ['#963b48', '#285b95', '#82631e'], I = ['⚔︎', '🛡︎', '⚡︎'];
+const M = ['攻撃', '防御', 'チャージ'], A = ['SWAP', 'LIE', 'DELAY', 'ZERO', 'HEAL'], C = ['#963b48', '#285b95', '#82631e'], I = ['⚔︎', '⛨', '⚡︎'];
 const $ = id => document.getElementById(id), rand = n => Math.floor(Math.random() * n), draw = () => ({ m: rand(3), a: A[rand(5)] }), fresh = () => ({ hp: 10, ch: 0, guard: 0, q: [], h: [draw(), draw(), draw()] });
 let p, e, t, phase, pi, ei, decl, ed, guess, eg, alt, ea, deadline, done, logs, history;
 const name = c => M[c.m] + ' / ' + c.a;
@@ -1691,7 +1689,7 @@ else
     n.push('双方の手札リセット'); if (c.a === 'HEAL')
     n.push('♥︎ HP＋1'); if (r.self)
     n.push('自傷：' + r.self); let hidden = i === 1 && c.a === 'DELAY'; return `<div class="result-side"><b>${i === 0 ? 'YOU' : 'CPU'}</b><div class="result-main" style="background:${hidden ? '#4b4e59' : C[c.m]}">${hidden ? '⌛︎ 予約：非公開' : I[c.m] + ' ' + M[c.m]}</div><span class="ability ${c.a}">${AI[c.a]} ${c.a}</span>${n.map(v => `<div class="event ${v.includes('成功') ? 'good' : v.includes('失敗') ? 'bad' : ''}">${v}</div>`).join('')}</div>`; } function impact(up, r, other) { if (!r.damage)
-    return `<div class="lane"><small>${up ? 'YOU → CPU' : 'CPU → YOU'}</small><span class="idle">攻撃なし</span></div>`; let hit = Math.max(r.pierce, r.damage - other.shield), block = r.damage - hit; let arrow = `<svg viewBox="0 0 36 48" aria-hidden="true" style="transform:rotate(${up ? 180 : 0}deg);--from:${up ? 24 : -24}px;--to:0px"><path d="M18 3 V39 M7 28 L18 40 L29 28" fill="none" stroke="#ff969e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`; let shield = other.shield ? `<span class="block">🛡︎ −${block}</span>` : ''; let power = `<span class="power">⚔︎ ${r.damage}${r.pierce ? ` <small>貫通${r.pierce}</small>` : ''}</span>`, result = `<span class="hit">${hit ? '✷ −' + hit : 'BLOCK 0'}</span>`; return `<div class="lane" aria-label="${up ? '自分から相手' : '相手から自分'}への攻撃">${up ? result + shield + arrow + power : power + arrow + shield + result}</div>`; } function vital(x, i, r, received) { return `<div class="vital"><small>${i ? 'CPU' : 'YOU'} HP</small><strong class="${x.hp < before[i] ? 'loss' : x.hp > before[i] ? 'gain' : ''}">${before[i]} → ${x.hp}</strong><div class="hp-track"><i style="--oldhp:${before[i] / 15 * 100}%;--newhp:${x.hp / 15 * 100}%;width:${x.hp / 15 * 100}%;background:${i ? '#ef7885' : '#65d6ad'}"></i></div><small class="charge-stat ${x.ch > oldch[i] ? 'charged' : ''}">⚡︎ ${oldch[i]} → ${x.ch}</small><div><small class="${r.shield ? 'guard-active' : ''}">🛡︎ 防御 ${r.shield}</small></div><div class="event">被ダメージ ${received}${r.self ? '（自傷 ' + r.self + '）' : ''}</div></div>`; } history = [`<section class="battle-result"><div class="result-head">TURN ${t} — BATTLE RESULT</div><div class="arena-side">${side(e, ec, ep, dd, pp, 1)}${vital(e, 1, ep, dd)}</div><div class="arena-lanes">${impact(true, pp, ep)}${impact(false, ep, pp)}</div><div class="arena-side">${side(p, pc, pp, pd, ep, 0)}${vital(p, 0, pp, pd)}</div>${!p.hp || !e.hp ? `<h3>${!p.hp && !e.hp ? 'DRAW' : e.hp ? 'YOU LOSE' : 'YOU WIN'}</h3>` : ''}</section>`]; if (!p.hp || !e.hp) {
+    return `<div class="lane"><small>${up ? 'YOU → CPU' : 'CPU → YOU'}</small><span class="idle">攻撃なし</span></div>`; let hit = Math.max(r.pierce, r.damage - other.shield), block = r.damage - hit; let arrow = `<svg viewBox="0 0 36 48" aria-hidden="true" style="transform:rotate(${up ? 180 : 0}deg);--from:${up ? 24 : -24}px;--to:0px"><path d="M18 3 V39 M7 28 L18 40 L29 28" fill="none" stroke="#ff969e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`; let shield = other.shield ? `<span class="block">⛨ −${block}</span>` : ''; let power = `<span class="power">⚔︎ ${r.damage}${r.pierce ? ` <small>貫通${r.pierce}</small>` : ''}</span>`, result = `<span class="hit">${hit ? '✷ −' + hit : 'BLOCK 0'}</span>`; return `<div class="lane" aria-label="${up ? '自分から相手' : '相手から自分'}への攻撃">${up ? result + shield + arrow + power : power + arrow + shield + result}</div>`; } function vital(x, i, r, received) { return `<div class="vital"><small>${i ? 'CPU' : 'YOU'} HP</small><strong class="${x.hp < before[i] ? 'loss' : x.hp > before[i] ? 'gain' : ''}">${before[i]} → ${x.hp}</strong><div class="hp-track"><i style="--oldhp:${before[i] / 15 * 100}%;--newhp:${x.hp / 15 * 100}%;width:${x.hp / 15 * 100}%;background:${i ? '#ef7885' : '#65d6ad'}"></i></div><small class="charge-stat ${x.ch > oldch[i] ? 'charged' : ''}">⚡︎ ${oldch[i]} → ${x.ch}</small><div><small class="${r.shield ? 'guard-active' : ''}">⛨ 防御 ${r.shield}</small></div><div class="event">被ダメージ ${received}${r.self ? '（自傷 ' + r.self + '）' : ''}</div></div>`; } history = [`<section class="battle-result"><div class="result-head">TURN ${t} — BATTLE RESULT</div><div class="arena-side">${side(e, ec, ep, dd, pp, 1)}${vital(e, 1, ep, dd)}</div><div class="arena-lanes">${impact(true, pp, ep)}${impact(false, ep, pp)}</div><div class="arena-side">${side(p, pc, pp, pd, ep, 0)}${vital(p, 0, pp, pd)}</div>${!p.hp || !e.hp ? `<h3>${!p.hp && !e.hp ? 'DRAW' : e.hp ? 'YOU LOSE' : 'YOU WIN'}</h3>` : ''}</section>`]; if (!p.hp || !e.hp) {
     done = true;
     phase = 'end';
     logs.push(!p.hp && !e.hp ? 'DRAW' : e.hp ? 'YOU LOSE' : 'YOU WIN');
